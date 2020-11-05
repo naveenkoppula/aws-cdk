@@ -1461,7 +1461,7 @@ export class JestSetup extends ValidationRule {
  * Most packages in v2 must be private. Carry an allowlist so we don't
  * accidentally publish private packages.
  */
-export class v2PublicPackages extends ValidationRule {
+export class V2PublicPackages extends ValidationRule {
   public readonly name = 'v2/public-package';
   private readonly allowlist = ['aws-cdk-lib', 'cdk', 'aws-cdk', 'awslint'];
 
