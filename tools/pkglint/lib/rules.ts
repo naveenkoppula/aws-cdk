@@ -1458,6 +1458,43 @@ export class JestSetup extends ValidationRule {
 }
 
 /**
+ * Most packages in v2 must be private. Carry an allowlist so we don't
+ * accidentally publish private packages.
+ */
+export class v2PublicPackages extends ValidationRule {
+  public readonly name = 'v2/public-package';
+  private readonly allowlist = ['aws-cdk-lib', 'cdk', 'aws-cdk', 'awslint'];
+
+  public validate(pkg: PackageJson): void {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const releaseJson = require(`${__dirname}/../../release.json`);
+    if (releaseJson.majorVersion === 1) {
+      // skip for v1
+      return;
+    }
+
+    if (this.allowlist.includes(pkg.json.name) && pkg.json.private === true) {
+      pkg.report({
+        ruleName: this.name,
+        message: 'Package must be public',
+        fix: () => {
+          delete pkg.json.private;
+        },
+      });
+    } else if (!this.allowlist.includes(pkg.json.name) && pkg.json.private !== true) {
+      pkg.report({
+        ruleName: this.name,
+        message: 'Package must not be public',
+        fix: () => {
+          delete pkg.json.private;
+          pkg.json.private = true;
+        },
+      });
+    }
+  }
+}
+
+/**
  * Determine whether this is a JSII package
  *
  * A package is a JSII package if there is 'jsii' section in the package.json
