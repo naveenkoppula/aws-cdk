@@ -1467,7 +1467,7 @@ export class V2PublicPackages extends ValidationRule {
 
   public validate(pkg: PackageJson): void {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const releaseJson = require(`${__dirname}/../../release.json`);
+    const releaseJson = require(`${__dirname}/../../../release.json`);
     if (releaseJson.majorVersion === 1) {
       // skip for v1
       return;
